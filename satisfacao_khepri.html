@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pesquisa de Satisfação · Clínica Khepri</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f4f4f2;min-height:100vh;padding:2rem 1.25rem 4rem}
+.wrap{max-width:560px;margin:0 auto}
+.logo{text-align:center;margin-bottom:2rem}
+.logo h1{font-size:26px;font-weight:700;color:#1a1a1a}
+.logo p{font-size:14px;color:#888;margin-top:4px}
+.card{background:#fff;border-radius:16px;padding:1.75rem;box-shadow:0 1px 8px rgba(0,0,0,.08);margin-bottom:1rem}
+.qtitulo{font-size:15px;font-weight:600;color:#222;margin-bottom:1rem}
+.estrelas{display:flex;gap:8px;justify-content:center;margin:0.5rem 0}
+.estrela{font-size:38px;cursor:pointer;transition:transform .15s;user-select:none;opacity:.3}
+.estrela:hover,.estrela.sel{opacity:1;transform:scale(1.15)}
+.label-estrelas{display:flex;justify-content:space-between;font-size:11px;color:#bbb;margin-top:4px}
+.emojis{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.emoji-opt{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;padding:10px 14px;border:2px solid #eee;border-radius:14px;transition:all .15s;min-width:70px}
+.emoji-opt:hover{border-color:#2d7dd2}
+.emoji-opt.sel{border-color:#2d7dd2;background:#e8f1fb}
+.emoji-opt span:first-child{font-size:30px}
+.emoji-opt span:last-child{font-size:11px;color:#666;font-weight:500;text-align:center}
+.pills{display:flex;flex-wrap:wrap;gap:8px}
+.pill{padding:8px 16px;border:1.5px solid #ddd;border-radius:20px;font-size:13px;cursor:pointer;background:#fff;color:#444;transition:all .15s;user-select:none}
+.pill:hover{border-color:#2d7dd2;color:#2d7dd2}
+.pill.sel{background:#e8f1fb;border-color:#2d7dd2;color:#1a4f8a;font-weight:700}
+textarea{width:100%;padding:12px;border:1px solid #ddd;border-radius:10px;font-size:14px;font-family:inherit;background:#fafafa;resize:vertical;min-height:90px;transition:border .2s}
+textarea:focus{outline:none;border-color:#2d7dd2;background:#fff}
+input[type=text]{width:100%;padding:11px 13px;border:1px solid #ddd;border-radius:10px;font-size:14px;font-family:inherit;background:#fafafa;transition:border .2s}
+input[type=text]:focus{outline:none;border-color:#2d7dd2;background:#fff}
+.nps-row{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;margin:.5rem 0}
+.nps-btn{width:44px;height:44px;border:1.5px solid #ddd;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;background:#fff;color:#555;transition:all .15s;font-family:inherit}
+.nps-btn:hover{border-color:#2d7dd2;color:#2d7dd2}
+.nps-btn.sel{background:#2d7dd2;border-color:#2d7dd2;color:#fff}
+.nps-label{display:flex;justify-content:space-between;font-size:11px;color:#bbb;margin-top:6px}
+.enviar{width:100%;padding:14px;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;background:#2d7dd2;color:#fff;font-family:inherit;transition:background .2s;margin-top:.5rem}
+.enviar:hover{background:#1a5da8}
+#obrigado{display:none;text-align:center;padding:3rem 1rem}
+.ok-ico{font-size:64px;margin-bottom:1rem}
+.ok-titulo{font-size:24px;font-weight:700;color:#1a1a1a;margin-bottom:8px}
+.ok-sub{font-size:15px;color:#666;line-height:1.6}
+@media print{body{background:#fff}.enviar{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="logo">
+    <h1>Clínica Khepri</h1>
+    <p>Sua opinião é muito importante para nós 💛</p>
+  </div>
+
+  <div id="formulario">
+
+    <!-- Nome -->
+    <div class="card">
+      <div class="qtitulo">Como você se chama? <span style="font-weight:400;color:#bbb">(opcional)</span></div>
+      <input type="text" id="nome" placeholder="Seu nome">
+    </div>
+
+    <!-- Atendimento geral -->
+    <div class="card">
+      <div class="qtitulo">⭐ Como você avalia o atendimento geral?</div>
+      <div class="estrelas" id="est-geral">
+        <span class="estrela" data-v="1" onclick="selEstrela('geral',1)">★</span>
+        <span class="estrela" data-v="2" onclick="selEstrela('geral',2)">★</span>
+        <span class="estrela" data-v="3" onclick="selEstrela('geral',3)">★</span>
+        <span class="estrela" data-v="4" onclick="selEstrela('geral',4)">★</span>
+        <span class="estrela" data-v="5" onclick="selEstrela('geral',5)">★</span>
+      </div>
+      <div class="label-estrelas"><span>Ruim</span><span>Excelente</span></div>
+    </div>
+
+    <!-- Profissional -->
+    <div class="card">
+      <div class="qtitulo">👩‍⚕️ Como avalia a profissional que te atendeu?</div>
+      <div class="estrelas" id="est-prof">
+        <span class="estrela" data-v="1" onclick="selEstrela('prof',1)">★</span>
+        <span class="estrela" data-v="2" onclick="selEstrela('prof',2)">★</span>
+        <span class="estrela" data-v="3" onclick="selEstrela('prof',3)">★</span>
+        <span class="estrela" data-v="4" onclick="selEstrela('prof',4)">★</span>
+        <span class="estrela" data-v="5" onclick="selEstrela('prof',5)">★</span>
+      </div>
+      <div class="label-estrelas"><span>Ruim</span><span>Excelente</span></div>
+    </div>
+
+    <!-- Espaço / estrutura -->
+    <div class="card">
+      <div class="qtitulo">🏡 Como avalia o espaço e a estrutura da clínica?</div>
+      <div class="estrelas" id="est-espaco">
+        <span class="estrela" data-v="1" onclick="selEstrela('espaco',1)">★</span>
+        <span class="estrela" data-v="2" onclick="selEstrela('espaco',2)">★</span>
+        <span class="estrela" data-v="3" onclick="selEstrela('espaco',3)">★</span>
+        <span class="estrela" data-v="4" onclick="selEstrela('espaco',4)">★</span>
+        <span class="estrela" data-v="5" onclick="selEstrela('espaco',5)">★</span>
+      </div>
+      <div class="label-estrelas"><span>Ruim</span><span>Excelente</span></div>
+    </div>
+
+    <!-- Como se sentiu -->
+    <div class="card">
+      <div class="qtitulo">😊 Como você se sentiu durante a consulta?</div>
+      <div class="emojis">
+        <div class="emoji-opt" data-k="sentiu" data-v="Muito bem" onclick="selEmoji(this)">
+          <span>😄</span><span>Muito bem</span>
+        </div>
+        <div class="emoji-opt" data-k="sentiu" data-v="Bem" onclick="selEmoji(this)">
+          <span>🙂</span><span>Bem</span>
+        </div>
+        <div class="emoji-opt" data-k="sentiu" data-v="Neutro" onclick="selEmoji(this)">
+          <span>😐</span><span>Neutro</span>
+        </div>
+        <div class="emoji-opt" data-k="sentiu" data-v="Desconfortável" onclick="selEmoji(this)">
+          <span>😕</span><span>Desconfortável</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- O que mais gostou -->
+    <div class="card">
+      <div class="qtitulo">✨ O que você mais gostou? <span style="font-weight:400;color:#bbb">(pode marcar mais de um)</span></div>
+      <div class="pills" id="gostou">
+        <div class="pill" data-v="Atendimento" onclick="selPill(this,'gostou')">Atendimento</div>
+        <div class="pill" data-v="Resultado do procedimento" onclick="selPill(this,'gostou')">Resultado do procedimento</div>
+        <div class="pill" data-v="Ambiente da clínica" onclick="selPill(this,'gostou')">Ambiente da clínica</div>
+        <div class="pill" data-v="Pontualidade" onclick="selPill(this,'gostou')">Pontualidade</div>
+        <div class="pill" data-v="Explicações e orientações" onclick="selPill(this,'gostou')">Explicações e orientações</div>
+        <div class="pill" data-v="Higiene e organização" onclick="selPill(this,'gostou')">Higiene e organização</div>
+        <div class="pill" data-v="Custo-benefício" onclick="selPill(this,'gostou')">Custo-benefício</div>
+      </div>
+    </div>
+
+    <!-- NPS -->
+    <div class="card">
+      <div class="qtitulo">💬 De 0 a 10, qual a chance de indicar a Clínica Khepri para alguém?</div>
+      <div class="nps-row" id="nps-row">
+        <button class="nps-btn" onclick="selNPS(this,0)">0</button>
+        <button class="nps-btn" onclick="selNPS(this,1)">1</button>
+        <button class="nps-btn" onclick="selNPS(this,2)">2</button>
+        <button class="nps-btn" onclick="selNPS(this,3)">3</button>
+        <button class="nps-btn" onclick="selNPS(this,4)">4</button>
+        <button class="nps-btn" onclick="selNPS(this,5)">5</button>
+        <button class="nps-btn" onclick="selNPS(this,6)">6</button>
+        <button class="nps-btn" onclick="selNPS(this,7)">7</button>
+        <button class="nps-btn" onclick="selNPS(this,8)">8</button>
+        <button class="nps-btn" onclick="selNPS(this,9)">9</button>
+        <button class="nps-btn" onclick="selNPS(this,10)">10</button>
+      </div>
+      <div class="nps-label"><span>Não indicaria</span><span>Com certeza indicaria</span></div>
+    </div>
+
+    <!-- Comentário livre -->
+    <div class="card">
+      <div class="qtitulo">📝 Quer deixar algum comentário ou sugestão?</div>
+      <textarea id="comentario" placeholder="Escreva à vontade..."></textarea>
+    </div>
+
+    <button class="enviar" onclick="enviar()">Enviar avaliação 💛</button>
+
+  </div>
+
+  <!-- Tela de obrigado -->
+  <div id="obrigado">
+    <div class="ok-ico">💛</div>
+    <div class="ok-titulo">Obrigada pelo seu carinho!</div>
+    <div class="ok-sub">Sua opinião nos ajuda a melhorar cada vez mais.<br>Até a próxima visita na <strong>Clínica Khepri</strong>! ✨</div>
+  </div>
+
+</div>
+<script>
+var S={};
+
+function selEstrela(grupo, val){
+  var cont=document.getElementById('est-'+grupo);
+  var estrelas=cont.querySelectorAll('.estrela');
+  estrelas.forEach(function(e,i){
+    e.classList.toggle('sel', i<val);
+  });
+  S['estrela_'+grupo]=val;
+}
+
+function selEmoji(el){
+  var k=el.getAttribute('data-k');
+  document.querySelectorAll('.emoji-opt[data-k="'+k+'"]').forEach(function(x){x.classList.remove('sel');});
+  el.classList.add('sel');
+  S[k]=el.getAttribute('data-v');
+}
+
+function selPill(el, grupo){
+  el.classList.toggle('sel');
+  var vals=[];
+  document.querySelectorAll('#'+grupo+' .pill.sel').forEach(function(x){vals.push(x.getAttribute('data-v'));});
+  S[grupo]=vals;
+}
+
+function selNPS(el, val){
+  document.querySelectorAll('.nps-btn').forEach(function(x){x.classList.remove('sel');});
+  el.classList.add('sel');
+  S['nps']=val;
+}
+
+function enviar(){
+  document.getElementById('formulario').style.display='none';
+  document.getElementById('obrigado').style.display='block';
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>
